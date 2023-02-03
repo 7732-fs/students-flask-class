@@ -18,5 +18,6 @@ def registrations(student_id):
     return render_template("registrations.html", student_name=student_name, course_names=course_names)
 
 
-# change
+# cha
+
 
