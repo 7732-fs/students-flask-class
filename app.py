@@ -17,13 +17,19 @@ def registrations(student_id):
     1. Get course IDs for this student using student_courses
     2. Get course names using course ids
     """
-    course_ids=execute_query(f"SELECT course_id FROM students_courses WHERE student_id={student_id}")
-    clean_ids=[ c[0] for c in course_ids ]
-    course_names=[]
-    for i in clean_ids:
-        course_names.append(execute_query(f"SELECT name FROM courses WHERE id={i}"))
-    student_name=execute_query(f"SELECT name FROM students WHERE id={student_id}")
-    return render_template("registrations.html", student_name=student_name, course_names=course_names)
+    # course_ids=execute_query(f"SELECT course_id FROM students_courses WHERE student_id={student_id}")
+    # clean_ids=[ c[0] for c in course_ids ]
+    # course_names=[]
+    # for i in clean_ids:
+    #     course_names.append(execute_query(f"SELECT name FROM courses WHERE id={i}"))
+    # student_name=execute_query(f"SELECT name FROM students WHERE id={student_id}")
+    course_names=execute_query(f"""
+        SELECT students.name from students where id={student_id} UNION
+        SELECT courses.name FROM courses 
+        JOIN students_courses on students_courses.course_id=courses.id 
+        WHERE students_courses.student_id={student_id} 
+    """)
+    return render_template("registrations.html", course_names=course_names)
 
 
 
