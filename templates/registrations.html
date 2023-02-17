@@ -7,9 +7,9 @@
     <title>Registration</title>
 </head>
 <body>
-    {{ course_names[0][0] }}
-    {% for course in course_names %}
-    {{ course }}
+    {% for course in courses %}
+    {{ course.name }}<br>
+    {{ course.teacher }}
     {% endfor %}
 </body>
 </html>
