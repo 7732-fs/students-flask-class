@@ -8,6 +8,17 @@ app = Flask(__name__)
 
 app.secret_key="sdksdkj"
 
+authorized_paths=["register", "add", "update"]
+
+@app.before_request
+def auth():
+    if "role" not in session.keys():
+        session["role"]="anonymous"
+        session["username"]="anonymous"
+    if session["role"]!='admin':
+        if "register" in request.full_path:
+            return abort(403)
+
 def authenticate(username, password):
     role=execute_query(f"SELECT role FROM users WHERE username='{username}' AND password='{password}'")
     if role == []:
@@ -32,15 +43,12 @@ def login():
 
 @app.route('/register/<student_id>/<course_id>')
 def register(student_id, course_id):
-    if session.get("role", "anonymous")=='admin':
-        try:
-            execute_query(
-                f"INSERT INTO students_courses (student_id, course_id) VALUES ('{student_id}', '{course_id}')")
-        except IntegrityError:
-            return f"{student_id} is already registered to {course_id}"
-        return redirect(url_for('registrations', student_id=student_id))
-    else:
-        return abort(403)
+    try:
+        execute_query(
+            f"INSERT INTO students_courses (student_id, course_id) VALUES ('{student_id}', '{course_id}')")
+    except IntegrityError:
+        return f"{student_id} is already registered to {course_id}"
+    return redirect(url_for('registrations', student_id=student_id))
     
 
 

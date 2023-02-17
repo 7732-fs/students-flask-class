@@ -19,3 +19,4 @@ def test_registration():
         name = requests.get(
             f"http://127.0.0.1:5000/course/{course_id}").json()[0][0]
         assert r.text.find(name) != -1
+    assert r.status_code==403
